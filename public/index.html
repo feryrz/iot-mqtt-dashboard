@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌐 IoT Device Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌐 IoT Device Dashboard</h1>
+      <div class="connection-status" id="connectionStatus">
+        <span class="status-dot"></span>
+        <span id="statusText">Connecting...</span>
+      </div>
+    </header>
+
+    <section class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-label">Total Devices</div>
+        <div class="stat-value" id="totalDevices">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Devices</div>
+        <div class="stat-value" id="activeDevices">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Readings</div>
+        <div class="stat-value" id="totalReadings">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Connection Status</div>
+        <div class="stat-value" id="mqttStatus">Online</div>
+      </div>
+    </section>
+
+    <section class="devices-section">
+      <h2>Devices</h2>
+      <div id="devicesContainer">
+        <div class="loading">Loading devices...</div>
+      </div>
+      
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <h3>No devices found</h3>
+        <p>Publish data to MQTT broker to see devices here</p>
+        <div class="example-code">
+          <strong>Example:</strong>
+          <pre>mosquitto_pub -t "devices/sensor-001/data" -m '{
+  "device_name": "Temperature Sensor",
+  "voltage": 12.5,
+  "current": 2.3,
+  "battery_soh": 95.5,
+  "soh_measurement_time": "2025-12-14T10:30:00Z"
+}'</pre>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
