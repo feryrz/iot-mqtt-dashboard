@@ -13,6 +13,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
   console.log(`Connected to SQLite database at ${dbPath}`);
 });
 
+// Serialize database operations to avoid race conditions
+db.serialize();
+
 // Enable foreign keys
 db.run('PRAGMA foreign_keys = ON');
 
@@ -70,16 +73,19 @@ db.run(`
   }
 });
 
-// Graceful shutdown
-process.on('SIGINT', () => {
-  db.close((err) => {
-    if (err) {
-      console.error('Error closing database:', err.message);
-    } else {
-      console.log('Database connection closed');
-    }
-    process.exit(0);
+// Export close function for graceful shutdown
+function closeDatabase() {
+  return new Promise((resolve, reject) => {
+    db.close((err) => {
+      if (err) {
+        console.error('Error closing database:', err.message);
+        reject(err);
+      } else {
+        console.log('Database connection closed');
+        resolve();
+      }
+    });
   });
-});
+}
 
-module.exports = db;
+module.exports = { db, closeDatabase };

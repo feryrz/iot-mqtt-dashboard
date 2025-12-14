@@ -3,14 +3,16 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
-const db = require('./database');
+const { db, closeDatabase } = require('./database');
 const { initializeMQTT, closeMQTT } = require('./mqtt-handler');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const PORT = process.env.PORT || 3000;
+// Validate and set PORT
+const portFromEnv = parseInt(process.env.PORT);
+const PORT = (portFromEnv && portFromEnv >= 1 && portFromEnv <= 65535) ? portFromEnv : 3000;
 
 // Middleware
 app.use(express.json());
@@ -170,14 +172,20 @@ server.listen(PORT, () => {
 });
 
 // Graceful shutdown
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   console.log('\nShutting down gracefully...');
   
   closeMQTT();
   
-  server.close(() => {
-    console.log('Server closed');
-    process.exit(0);
+  server.close(async () => {
+    try {
+      await closeDatabase();
+      console.log('Server closed');
+      process.exit(0);
+    } catch (err) {
+      console.error('Error during shutdown:', err);
+      process.exit(1);
+    }
   });
   
   // Force exit after 10 seconds

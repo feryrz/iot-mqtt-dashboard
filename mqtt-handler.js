@@ -1,5 +1,5 @@
 const mqtt = require('mqtt');
-const db = require('./database');
+const { db } = require('./database');
 
 let mqttClient = null;
 let io = null;
@@ -74,8 +74,10 @@ function handleMessage(topic, message) {
     const deviceId = topicParts[1];
     const payload = JSON.parse(message.toString());
 
-    // Validate required fields
-    if (!payload.voltage || !payload.current || !payload.battery_soh) {
+    // Validate required fields (allow zero values but not null/undefined)
+    if (payload.voltage === null || payload.voltage === undefined ||
+        payload.current === null || payload.current === undefined ||
+        payload.battery_soh === null || payload.battery_soh === undefined) {
       console.warn(`Missing required fields in message from ${deviceId}`);
       return;
     }
