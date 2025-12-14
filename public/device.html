@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Details - IoT Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <button class="back-button" onclick="window.location.href='/'">
+          ← Back to Dashboard
+        </button>
+        <div class="device-header">
+          <h1 id="deviceName">Loading...</h1>
+          <div class="device-status-badge">
+            <span class="status-dot" id="deviceStatusDot"></span>
+            <span id="deviceStatus">Unknown</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="latest-data-section">
+      <h2>Latest Data</h2>
+      <div class="data-cards">
+        <div class="data-card gradient-1">
+          <div class="card-icon">⚡</div>
+          <div class="card-content">
+            <div class="card-label">Voltage</div>
+            <div class="card-value" id="latestVoltage">-</div>
+            <div class="card-unit">V</div>
+          </div>
+        </div>
+        <div class="data-card gradient-2">
+          <div class="card-icon">🔌</div>
+          <div class="card-content">
+            <div class="card-label">Current</div>
+            <div class="card-value" id="latestCurrent">-</div>
+            <div class="card-unit">A</div>
+          </div>
+        </div>
+        <div class="data-card gradient-3">
+          <div class="card-icon">🔋</div>
+          <div class="card-content">
+            <div class="card-label">Battery SOH</div>
+            <div class="card-value" id="latestBatterySoh">-</div>
+            <div class="card-unit">%</div>
+          </div>
+        </div>
+        <div class="data-card gradient-4">
+          <div class="card-icon">🕐</div>
+          <div class="card-content">
+            <div class="card-label">Last Updated</div>
+            <div class="card-value small" id="latestTimestamp">-</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="history-section">
+      <div class="section-header">
+        <h2>Historical Data</h2>
+        <button class="export-button" id="exportButton">📊 Export CSV</button>
+      </div>
+      
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Voltage (V)</th>
+              <th>Current (A)</th>
+              <th>Battery SOH (%)</th>
+              <th>SOH Measurement Time</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody">
+            <tr>
+              <td colspan="5" class="loading">Loading historical data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="load-more-container">
+        <button class="load-more-button" id="loadMoreButton">Load More</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/device.js"></script>
+</body>
+</html>
