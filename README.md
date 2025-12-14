@@ -333,7 +333,11 @@ Get dashboard statistics.
    - Regular backups of `iot_data.db`
    - Restrict file permissions on database file
 
-6. **Input Validation:**
+6. **Rate Limiting:**
+   - API endpoints are rate-limited (100 requests per 15 minutes per IP)
+   - Prevents DoS attacks and abuse
+
+7. **Input Validation:**
    - All API inputs are validated
    - SQL injection prevention via parameterized queries
    - XSS prevention via HTML escaping in frontend

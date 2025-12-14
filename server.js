@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
@@ -13,6 +14,18 @@ const io = new Server(server);
 // Validate and set PORT
 const portFromEnv = parseInt(process.env.PORT);
 const PORT = (portFromEnv && portFromEnv >= 1 && portFromEnv <= 65535) ? portFromEnv : 3000;
+
+// Rate limiting middleware
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+// Apply rate limiting to API routes
+app.use('/api/', apiLimiter);
 
 // Middleware
 app.use(express.json());
